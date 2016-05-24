@@ -15,13 +15,13 @@ Vagrant.configure(2) do |config|
   config.vm.box = "debian/jessie64"
   config.vm.box_version = "8.2.1"
 
-  config.vm.hostname = "ole"
+  config.vm.hostname = "community"
 
-  config.vm.define "ole" do |ole|
+  config.vm.define "community" do |community|
   end
 
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "ole"
+    vb.name = "community"
   end
 
   # Disable automatic box update checking. If you disable this, then
@@ -131,8 +131,6 @@ Vagrant.configure(2) do |config|
     #curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \"/usr/local/var/lib/couchdb\"}"'
     curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \\"/usr/local/var/lib/couchdb\\"}"'
 
-    sudo chmod +x /etc/init.d/bell
-    sudo update-rc.d bell defaults
     sudo service bell start
   SHELL
 end

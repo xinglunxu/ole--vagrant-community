@@ -24,7 +24,7 @@ ole--vagrant-community gives users the ability to install fast their own communi
 Open your `Terminal`. We assume that [brew](http://brew.sh/) is already installed.
 ```sh
     brew install git 
-    brew install vagrant
+    brew cask install vagrant
     brew cask install virtualbox
 ```
 
@@ -44,4 +44,4 @@ cd ole--vagrant-community
 vagrant up
 ```
 
-You now have a working [communityBeLL](http://127.0.0.1:5985/apps/_design/bell/MyApp/index.html) on your OS.
+You now have a working [communityBeLL](http://127.0.0.1:5984/apps/_design/bell/MyApp/index.html) on your OS.
