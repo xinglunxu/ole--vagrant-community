@@ -130,7 +130,5 @@ Vagrant.configure(2) do |config|
     mv favicon.ico /srv/data/bell/.
     #curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \"/usr/local/var/lib/couchdb\"}"'
     curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \\"/usr/local/var/lib/couchdb\\"}"'
-
-    sudo service bell start
   SHELL
 end
