@@ -12,6 +12,8 @@ ole--vagrant-community gives users the ability to install fast their own communi
 - Install [vagrant](https://www.vagrantup.com/downloads.html)
   - [Vagrant](https://www.vagrantup.com) is an open source tool for building development environments. 
   - Confirmed working on v1.8.1 (check with `vagrant --version`)
+- (OPTIONAL for Windows Users) [putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+  - [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/) is free implementation of SSH and Telnet for Windows and Unix platforms, along with an xterm terminal emulator.
  
 ### Ubuntu
 ```sh
