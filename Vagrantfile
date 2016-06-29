@@ -12,8 +12,8 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "debian/jessie64"
-  config.vm.box_version = "8.2.1"
+  config.vm.box = "ole/jessie64"
+  config.vm.box_version = "0.1.1"
 
   config.vm.hostname = "community"
 
@@ -34,6 +34,7 @@ Vagrant.configure(2) do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 5984, host: 5984
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -76,15 +77,11 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    echo "deb http://ftp.de.debian.org/debian jessie-backports main" | sudo tee -a /etc/apt/sources.list
-    sudo aptitude update
-    sudo aptitude install -y docker.io vim vim-syntax-docker nodejs screen htop
-    # install docker couchdb
-    sudo docker pull klaemo/couchdb
     sudo docker run -d -p 5984:5984 --name bell -v /srv/data/bell:/usr/local/var/lib/couchdb -v /srv/log/bell:/usr/local/var/log/couchdb klaemo/couchdb
     # use crontab to start couchdb on boot
     sudo crontab -l | sudo tee -a mycron
     echo "@reboot sudo docker start bell" | sudo tee -a mycron
+    echo "@reboot sudo node /root/server.js" | sudo tee -a mycron
     sudo crontab mycron
     sudo rm mycron
     # fix nodejs
@@ -130,5 +127,30 @@ Vagrant.configure(2) do |config|
     mv favicon.ico /srv/data/bell/.
     #curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \"/usr/local/var/lib/couchdb\"}"'
     curl -X PUT 'http://127.0.0.1:5984/_config/httpd_global_handlers/favicon.ico' -d '"{couch_httpd_misc_handlers, handle_favicon_req, \\"/usr/local/var/lib/couchdb\\"}"'
+
+    # add redirect on port 8080
+    cd /root
+    npm install express
+    echo '#!/usr/bin/env node' > server.js
+    echo '' >> server.js
+    echo "var express = require('express')" >> server.js
+    echo 'var PortJack = express()' >> server.js
+    echo 'PortJack.get(/^(.+)$/, function(req, res) {' >> server.js
+    echo 'var options = {' >> server.js
+    echo '"127.0.0.1": "http://127.0.0.1:5984/apps/_design/bell/MyApp/index.html",' >> server.js
+    echo '"localhost": "http://localhost:5984/apps/_design/bell/MyApp/index.html"' >> server.js
+    echo '}' >> server.js
+    echo 'if (options.hasOwnProperty(req.hostname)) {' >> server.js
+    echo "res.setHeader('Location', options[req.hostname])" >> server.js
+    echo '}' >> server.js
+    echo 'else {' >> server.js
+    echo "res.setHeader('Location', 'http://ole.org')" >> server.js
+    echo '}' >> server.js
+    echo 'res.statusCode = 302' >> server.js
+    echo 'res.end()' >> server.js
+    echo '})' >> server.js
+    echo 'PortJack.listen(8080)' >> server.js
+    chmod +x server.js
+    node /root/server.js &
   SHELL
 end
