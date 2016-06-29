@@ -1,9 +1,0 @@
-
-{
-   "entries": [
-     {"endpoint":"ec2-54-213-248-5.us-west-2.compute.amazonaws.com",
-       "command": "cat ~/supplier.data",
-       "mandatory":true,
-       "username": "ec2-user"}
-   ]
-}
