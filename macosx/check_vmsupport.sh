@@ -1,0 +1,1 @@
+sysctl -a | grep machdep.cpu.features | egrep -c 'VMX'
